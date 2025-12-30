@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    image: chatbot_backend:latest
+    container_name: chatbot_backend
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      # Add your MongoDB URI here or use an external MongoDB service
+      - MONGO_URI=mongodb://mongo:27017/chatbotDB
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend
+    image: chatbot_frontend:latest
+    container_name: chatbot_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo:6
+    container_name: chatbot_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
